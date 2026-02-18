@@ -1,0 +1,6 @@
+{
+  "email": "Email must be an email",
+  "isNotEmpty": "Field should not be empty",
+  "isString": "Field must be a string",
+  "isPhoneNumber": "Field must be a valid phone number"
+}
