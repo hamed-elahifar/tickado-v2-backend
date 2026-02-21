@@ -2,9 +2,9 @@ export default {
   apps: [
     {
       name: 'Tickado V2',
-      script: 'bun',
-      args: 'run start',
-      interpreter: 'none',
+      script: 'src/main.ts',
+      interpreter: 'bun',
+      // args: 'start', // args are not needed if running the file directly
       instances: 1,
       autorestart: true,
       watch: false,
