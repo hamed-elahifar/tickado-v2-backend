@@ -13,7 +13,7 @@ import { LogInDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import type { JwtPayload } from './interfaces/jwt-payload.interface';
 import { randomNumber } from '../common/utils/random-number';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
