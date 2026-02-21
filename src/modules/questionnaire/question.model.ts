@@ -37,6 +37,7 @@ export const QuestionOptionSchema =
 export class Question extends Document {
   @ApiProperty({ example: 'q_1', description: 'Question id' })
   @Prop({ required: true, type: String })
+  // @ts-ignore
   id: string;
 
   @ApiProperty({
