@@ -2,8 +2,9 @@ module.exports = {
   apps: [
     {
       name: 'Tickado V2',
-      script: 'src/main.ts',
+      script: 'dist/main.js',
       interpreter: 'bun',
+      interpreter_args: 'run',
       instances: 1,
       autorestart: true,
       watch: false,
