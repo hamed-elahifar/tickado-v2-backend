@@ -1,9 +1,10 @@
 export default {
   apps: [
     {
-      name: 'Tickado new',
-      script: 'dist/main.js',
-      interpreter: 'bun',
+      name: 'Tickado V2',
+      script: 'bun',
+      args: 'run start',
+      interpreter: 'none',
       instances: 1,
       autorestart: true,
       watch: false,
