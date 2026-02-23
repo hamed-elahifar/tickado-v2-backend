@@ -3,14 +3,16 @@ module.exports = {
     {
       name: 'Tickado V2',
       script: 'dist/main.js',
-      interpreter: 'node',
+      interpreter: 'bun',
+      env: {
+        PATH: `${process.env.HOME}/.bun/bin:${process.env.PATH}`,
+        NODE_ENV: 'production',
+      },
       instances: 1,
+      exec_mode: 'fork',
       autorestart: true,
       watch: false,
-      max_memory_restart: '1G',
-      env: {
-        NODE_ENV: 'dev',
-      },
+      max_memory_restart: '512M',
     },
   ],
 };
