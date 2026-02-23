@@ -2,7 +2,10 @@ import {
   DynamicModule,
   FactoryProvider,
   Global,
+  Inject,
+  Injectable,
   ModuleMetadata,
+  OnApplicationShutdown,
 } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import IORedis, { Redis, RedisOptions } from 'ioredis';
@@ -20,6 +23,23 @@ type RedisAsyncModuleOptions = {
   ) => Promise<RedisModuleOptions> | RedisModuleOptions;
 } & Pick<ModuleMetadata, 'imports'> &
   Pick<FactoryProvider, 'inject'>;
+
+@Injectable()
+class RedisLifecycleService implements OnApplicationShutdown {
+  constructor(@Inject(IORedisKey) private readonly redisClient: Redis) {}
+
+  async onApplicationShutdown() {
+    if (!this.redisClient || this.redisClient.status === 'end') {
+      return;
+    }
+
+    try {
+      await this.redisClient.quit();
+    } catch {
+      this.redisClient.disconnect();
+    }
+  }
+}
 
 @Global()
 @Module({})
@@ -48,7 +68,7 @@ export class RedisModule {
     return {
       module: RedisModule,
       imports,
-      providers: [redisProvider],
+      providers: [redisProvider, RedisLifecycleService],
       exports: [redisProvider],
     };
   }

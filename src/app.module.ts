@@ -23,6 +23,7 @@ import { TelegramModule } from './modules/common/telegram/telegram.module';
 import { GlobalExceptionFilter } from './modules/common/filters';
 import { Request } from 'express';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import { NotifModule } from './modules/notif/notif.module';
 
 @Module({
   imports: [
@@ -45,13 +46,17 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
       useFactory: (config: ConfigService) => {
         const isProduction = config.get<string>('NODE_ENV') === 'production';
 
+        const throttlerStorage = isProduction
+          ? new ThrottlerStorageRedisService(
+              config.getOrThrow<string>('REDIS_URL'),
+            )
+          : undefined;
+
         return {
           throttlers: isProduction
             ? [{ name: 'default', limit: 20, ttl: seconds(60) }]
             : [],
-          storage: new ThrottlerStorageRedisService(
-            config.getOrThrow<string>('REDIS_URL'),
-          ),
+          storage: throttlerStorage,
           errorMessage: 'Wow! Slow down.',
           getTracker: (req: Request, context: ExecutionContext): string => {
             const httpRequest =
@@ -94,6 +99,7 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
     LoggerModule,
     PushNotificationsModule,
     TelegramModule,
+    NotifModule,
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {

@@ -19,7 +19,7 @@ export class LogInDto {
   email?: string;
 
   @ApiPropertyOptional({
-    example: '12345',
+    example: '1234',
     description: 'The Sms Code',
   })
   @IsString()

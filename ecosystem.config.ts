@@ -3,8 +3,7 @@ export default {
     {
       name: 'Tickado V2',
       script: 'dist/main.js',
-      interpreter: 'bun',
-      interpreter_args: 'run',
+      interpreter: 'node',
       instances: 1,
       autorestart: true,
       watch: false,

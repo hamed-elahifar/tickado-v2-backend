@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'Tickado V2',
       script: 'dist/main.js',
-      interpreter: 'bun',
+      interpreter: 'node',
       instances: 1,
       autorestart: true,
       watch: false,
