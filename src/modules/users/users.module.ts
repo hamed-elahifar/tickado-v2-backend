@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './users.model';
+import { UsersProfileController } from './users-profile.controller';
+import { UsersProfileService } from './users-profile.service';
 import { UsersController } from './users.controller';
-import { UserRepository } from './users.repository';
+import { User, UserSchema } from './users.model';
 import { UsersRedisRepository } from './users.redis-repository';
-import { redisModule } from '../common/redis/redis-module.config';
+import { UserRepository } from './users.repository';
+import { UserService } from './users.service';
 
 @Module({
   imports: [
@@ -16,8 +17,13 @@ import { redisModule } from '../common/redis/redis-module.config';
       },
     ]),
   ],
-  controllers: [UsersController],
-  providers: [UserService, UserRepository, UsersRedisRepository],
+  controllers: [UsersController, UsersProfileController],
+  providers: [
+    UserService,
+    UserRepository,
+    UsersRedisRepository,
+    UsersProfileService,
+  ],
   exports: [UserService, UserRepository, MongooseModule],
 })
 export class UsersModule {}

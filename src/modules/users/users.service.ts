@@ -17,4 +17,8 @@ export class UserService extends BaseService<
   ) {
     super(repository, 'User');
   }
+
+  async me(userID: string): Promise<UserDocument> {
+    return this.findOneSafe({ _id: userID }, ['-__v']);
+  }
 }

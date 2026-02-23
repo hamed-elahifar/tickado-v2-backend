@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsEmail,
   MinLength,
+  IsObject,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -45,4 +46,14 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   locale?: string;
+
+  @ApiPropertyOptional({
+    example: { bio: 'Software Engineer', interests: ['coding', 'hiking'] },
+    description: 'Arbitrary key-value pairs for the user profile',
+    type: Object,
+    additionalProperties: true,
+  })
+  @IsObject()
+  @IsOptional()
+  profile?: Record<string, any>;
 }
