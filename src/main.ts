@@ -7,10 +7,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'compression';
 import { I18nValidationPipe } from 'nestjs-i18n';
-import 'reflect-metadata';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './modules/common/filters';
 import { ResponseInterceptor } from './modules/common/interceptors';
+import 'reflect-metadata';
 
 async function bootstrap() {
   const logger = new Logger('Main');
