@@ -1,17 +1,19 @@
+require('dotenv').config();
+
 module.exports = {
   apps: [
     {
       name: 'Tickado V2',
       script: 'dist/main.js',
-      interpreter: 'bun',
+      interpreter: 'node',
       env: {
-        PATH: `${process.env.HOME}/.bun/bin:${process.env.PATH}`,
-        NODE_ENV: 'production',
+        ...process.env,
+        NODE_ENV: process.env.NODE_ENV || 'production',
       },
-      instances: 1,
-      exec_mode: 'fork',
+      instances: 'max',
+      exec_mode: 'cluster', // 'fork' or 'cluster'
       autorestart: true,
-      watch: false,
+      watch: true,
       max_memory_restart: '512M',
     },
   ],
