@@ -13,7 +13,7 @@ module.exports = {
       instances: 1, //'max',
       exec_mode: 'fork', // 'fork' or 'cluster'
       autorestart: true,
-      watch: true,
+      watch: false,
       max_memory_restart: '512M',
     },
   ],
