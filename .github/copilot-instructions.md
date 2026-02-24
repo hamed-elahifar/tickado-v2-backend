@@ -8,16 +8,16 @@ NestJS backend (v11) with MongoDB (Mongoose), Redis (ioredis), and Bun runtime. 
 
 ## Key Commands
 
-| Task | Command |
-|---|---|
-| Dev (Bun watch) | `bun dev` |
-| Dev (Nest watch) | `bun start:dev` |
-| Build | `bun run build` (SWC via `nest build`) |
-| Lint + fix | `bun run lint` |
-| Unit tests | `bun test` |
-| All E2E tests | `bun run test:e2e` (uses `.env.test`) |
+| Task             | Command                                                                                         |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| Dev (Bun watch)  | `bun dev`                                                                                       |
+| Dev (Nest watch) | `bun start:dev`                                                                                 |
+| Build            | `bun run build` (SWC via `nest build`)                                                          |
+| Lint + fix       | `bun run lint`                                                                                  |
+| Unit tests       | `bun test`                                                                                      |
+| All E2E tests    | `bun run test:e2e` (uses `.env.test`)                                                           |
 | Single E2E suite | `NODE_ENV=test jest --config ./test/jest-e2e.json test/<module>/<name>.e2e-spec.ts --runInBand` |
-| Format | `bun run format` |
+| Format           | `bun run format`                                                                                |
 
 Production uses `bun run dist/main.js`. Docker builds with `oven/bun:1-alpine`.
 
@@ -65,14 +65,24 @@ Concrete repositories/services should be thin — add custom methods only when t
 ## Response & Error Format
 
 **All successful responses** are wrapped by `ResponseInterceptor`:
+
 ```json
 { "success": true, "statusCode": 200, "data": { ... }, "timestamp": "..." }
 ```
 
 **All errors** go through `GlobalExceptionFilter`:
+
 ```json
-{ "success": false, "statusCode": 400, "error": "Bad Request", "message": "...", "code": "DUPLICATE_KEY_ERROR", "timestamp": "..." }
+{
+  "success": false,
+  "statusCode": 400,
+  "error": "Bad Request",
+  "message": "...",
+  "code": "DUPLICATE_KEY_ERROR",
+  "timestamp": "..."
+}
 ```
+
 5xx errors are automatically sent to Telegram via `TelegramService`.
 
 ## Testing
@@ -85,14 +95,14 @@ Concrete repositories/services should be thin — add custom methods only when t
 
 ## External Services
 
-| Service | Module | Config env vars |
-|---|---|---|
-| MongoDB | `MongooseModule` | `MONGO_URL` |
-| Redis | `src/modules/common/redis/` (global) | `REDIS_URL`, `REDIS_HOST`, `REDIS_PORT`, `REDIS_TTL` |
-| Pusher (push notifs) | `PushNotificationsModule` (global) | `PUSHER_APP_ID`, `PUSHER_KEY`, `PUSHER_SECRET`, `PUSHER_CLUSTER` |
-| SMS (OTP) | `SmsModule` | `SMS_API_URL`, `SMS_API_KEY`, `SMS_SENDER`, `SMS_TEMPLATE` |
-| Telegram (error alerts) | `TelegramModule` | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
-| Neshan (location) | `LocationService` | `NESHAN_API_KEY` |
+| Service                 | Module                               | Config env vars                                                  |
+| ----------------------- | ------------------------------------ | ---------------------------------------------------------------- |
+| MongoDB                 | `MongooseModule`                     | `MONGO_URL`                                                      |
+| Redis                   | `src/modules/common/redis/` (global) | `REDIS_URL`, `REDIS_HOST`, `REDIS_PORT`, `REDIS_TTL`             |
+| Pusher (push notifs)    | `PushNotificationsModule` (global)   | `PUSHER_APP_ID`, `PUSHER_KEY`, `PUSHER_SECRET`, `PUSHER_CLUSTER` |
+| SMS (OTP)               | `SmsModule`                          | `SMS_API_URL`, `SMS_API_KEY`, `SMS_SENDER`, `SMS_TEMPLATE`       |
+| Telegram (error alerts) | `TelegramModule`                     | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`                         |
+| Neshan (location)       | `LocationService`                    | `NESHAN_API_KEY`                                                 |
 
 ## Naming Conventions
 
