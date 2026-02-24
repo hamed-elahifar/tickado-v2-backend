@@ -1,5 +1,4 @@
 import { ExecutionContext, Module } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UsersModule } from './modules/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -110,9 +109,6 @@ import { NotifModule } from './modules/notif/notif.module';
         { use: QueryResolver, options: ['lang'] },
         AcceptLanguageResolver,
       ],
-    }),
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'public'),
     }),
   ],
   controllers: [],

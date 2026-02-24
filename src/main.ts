@@ -19,11 +19,6 @@ async function bootstrap() {
   app.set('trust proxy', 1);
   app.use(compression());
 
-  // Serve static files from the public directory
-  // app.useStaticAssets(join(__dirname, '..', 'public'), {
-  //   prefix: '/',
-  // });
-
   // Get services from the DI container
   const globalExceptionFilter = app.get(GlobalExceptionFilter);
 
