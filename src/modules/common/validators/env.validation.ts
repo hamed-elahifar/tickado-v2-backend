@@ -89,6 +89,19 @@ class EnvironmentVariables {
   @IsOptional()
   TELEGRAM_CHAT_ID?: string;
 
+  // S3
+  @IsString()
+  S3_ENDPOINT: string;
+
+  @IsString()
+  S3_BUCKET_NAME: string;
+
+  @IsString()
+  S3_ACCESS_KEY: string;
+
+  @IsString()
+  S3_SECRET_KEY: string;
+
   @IsString()
   NESHAN_API_KEY: string;
 }

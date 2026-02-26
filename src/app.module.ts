@@ -23,6 +23,7 @@ import { GlobalExceptionFilter } from './modules/common/filters';
 import { Request } from 'express';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { NotifModule } from './modules/notif/notif.module';
+import { S3Module } from './modules/s3/s3.module';
 
 @Module({
   imports: [
@@ -99,6 +100,7 @@ import { NotifModule } from './modules/notif/notif.module';
     PushNotificationsModule,
     TelegramModule,
     NotifModule,
+    S3Module,
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
