@@ -5,7 +5,7 @@ import {
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'node:crypto';
 
 export interface MulterFile {
   fieldname: string;
@@ -16,9 +16,13 @@ export interface MulterFile {
   buffer: Buffer;
 }
 
+interface S3ClientLike {
+  send(command: unknown): Promise<unknown>;
+}
+
 @Injectable()
 export class S3Service {
-  private readonly s3Client: S3Client;
+  private readonly s3Client: S3ClientLike;
   private readonly logger = new Logger(S3Service.name);
   private readonly bucketName: string;
   private readonly endpoint: string;
@@ -27,7 +31,7 @@ export class S3Service {
     this.bucketName = this.configService.getOrThrow<string>('S3_BUCKET_NAME');
     this.endpoint = this.configService.getOrThrow<string>('S3_ENDPOINT');
 
-    this.s3Client = new S3Client({
+    const s3Client: unknown = new S3Client({
       region: 'default',
       endpoint: this.endpoint,
       credentials: {
@@ -36,6 +40,8 @@ export class S3Service {
       },
       forcePathStyle: true,
     });
+
+    this.s3Client = s3Client as S3ClientLike;
   }
 
   async uploadFile(
@@ -49,7 +55,7 @@ export class S3Service {
       'utf8',
     );
     const extension = originalName.split('.').pop();
-    const filename = customFilename || `${uuidv4()}.${extension}`;
+    const filename = customFilename || `${randomUUID()}.${extension}`;
     const key = folder ? `${folder}/${filename}` : filename;
 
     try {
