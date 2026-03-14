@@ -54,9 +54,6 @@ export class User extends Document {
   @Prop({ type: String, enum: RolesEnum, default: undefined })
   roles: RolesEnum;
 
-  @Prop({ type: String, default: '' })
-  lastGameID: string;
-
   @ApiProperty({
     example: { bio: 'Software Engineer', interests: ['coding', 'hiking'] },
     description: 'The user profile containing arbitrary key-value pairs',

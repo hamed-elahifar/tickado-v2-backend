@@ -7,9 +7,30 @@ import { SmsModule } from '../common/sms/sms.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import type { StringValue } from 'ms';
 // import { APP_GUARD } from '@nestjs/core';
 // import { JwtAuthGuard } from './guards/jwt-auth.guard';
 // import { RolesGuard } from './guards/roles.guard';
+
+const normalizeJwtExpiresIn = (
+  rawExpiresIn: string | number | undefined,
+): number | StringValue => {
+  if (typeof rawExpiresIn === 'number') {
+    return rawExpiresIn;
+  }
+
+  if (typeof rawExpiresIn !== 'string') {
+    return '1y';
+  }
+
+  const trimmedExpiresIn = rawExpiresIn.trim();
+
+  if (/^\d+$/.test(trimmedExpiresIn)) {
+    return Number(trimmedExpiresIn);
+  }
+
+  return trimmedExpiresIn as StringValue;
+};
 
 @Module({
   imports: [
@@ -23,10 +44,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.getOrThrow<string>(
-            'JWT_EXPIRES_IN',
-            '1y',
-          ) as any,
+          expiresIn: normalizeJwtExpiresIn(
+            configService.get<string>('JWT_EXPIRES_IN', '1y'),
+          ),
         },
       }),
     }),

@@ -8,7 +8,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -22,7 +21,6 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesEnum } from '../auth/enums/roles.enum';
 
 @ApiTags('s3')
-@ApiBearerAuth()
 @Controller('s3')
 @Roles(RolesEnum.ADMIN)
 export class S3Controller {

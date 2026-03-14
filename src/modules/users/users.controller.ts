@@ -42,7 +42,7 @@ export class UsersController extends BaseController<
     type: User,
   })
   me(@GetJwt() jwt: JwtPayload): Promise<UserDocument> {
-    return this.userService.me(jwt.userID) as Promise<UserDocument>;
+    return this.userService.me(jwt.userID);
   }
 
   @Get(':id')
