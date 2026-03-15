@@ -17,4 +17,15 @@ export class UpdateUserDto {
   @IsObject()
   @IsOptional()
   profile?: Record<string, any>;
+
+  @ApiProperty({
+    example: { priority: 'high', notes: 'internal user' },
+    description: 'System profile editable only by admins',
+    required: false,
+    type: Object,
+    additionalProperties: true,
+  })
+  @IsObject()
+  @IsOptional()
+  systemProfile?: Record<string, any>;
 }

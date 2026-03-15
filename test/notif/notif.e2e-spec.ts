@@ -112,6 +112,11 @@ describe('NotifController (e2e)', () => {
     process.env.PUSHER_SECRET = process.env.PUSHER_SECRET || 'test-secret';
     process.env.PUSHER_CLUSTER = process.env.PUSHER_CLUSTER || 'test-cluster';
 
+    process.env.S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost';
+    process.env.S3_BUCKET_NAME = process.env.S3_BUCKET_NAME || 'tickado-test';
+    process.env.S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || 'test-access-key';
+    process.env.S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'test-secret-key';
+
     process.env.NESHAN_API_KEY = process.env.NESHAN_API_KEY || 'test-neshan';
 
     const { AppModule }: AppModuleType = await import('../../src/app.module');

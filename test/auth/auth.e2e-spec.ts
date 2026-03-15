@@ -6,7 +6,9 @@ import { getConnectionToken } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from '../../src/modules/users/dto';
 import { LogInDto } from '../../src/modules/auth/dto/login.dto';
-import { AppModule } from '../../src/app.module';
+import { PusherService } from '../../src/modules/common/push-notifications/pusher.service';
+
+type AppModuleType = typeof import('../../src/app.module');
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -24,9 +26,25 @@ describe('AuthController (e2e)', () => {
   };
 
   beforeAll(async () => {
+    process.env.NODE_ENV = process.env.NODE_ENV || 'test';
+    process.env.S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost';
+    process.env.S3_BUCKET_NAME = process.env.S3_BUCKET_NAME || 'tickado-test';
+    process.env.S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || 'test-access-key';
+    process.env.S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'test-secret-key';
+
+    const { AppModule }: AppModuleType = await import('../../src/app.module');
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(PusherService)
+      .useValue({
+        trigger: jest.fn(),
+        triggerToUser: jest.fn(),
+        triggerToGame: jest.fn(),
+        triggerToChannel: jest.fn(),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     connection = moduleFixture.get<Connection>(getConnectionToken());
@@ -52,7 +70,7 @@ describe('AuthController (e2e)', () => {
         .send(testUser)
         .expect(200);
 
-      expect(response.text).toContain('verification code has been send');
+      expect(response.text).toContain('verification code has been sent');
     });
 
     xit('should handle existing user and send new verification code', async () => {

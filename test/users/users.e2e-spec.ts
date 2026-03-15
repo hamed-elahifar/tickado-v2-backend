@@ -54,6 +54,10 @@ describe('UsersController (e2e)', () => {
 
   beforeAll(async () => {
     process.env.NODE_ENV = 'test';
+    process.env.S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost';
+    process.env.S3_BUCKET_NAME = process.env.S3_BUCKET_NAME || 'tickado-test';
+    process.env.S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || 'test-access-key';
+    process.env.S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'test-secret-key';
 
     const { AppModule } = await import('../../src/app.module');
 

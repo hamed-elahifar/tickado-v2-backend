@@ -60,6 +60,13 @@ export class User extends Document {
   })
   @Prop({ type: Object, default: {} })
   profile: Record<string, any>;
+
+  @ApiProperty({
+    example: { priority: 'high', notes: 'internal user' },
+    description: 'System profile editable only by admins',
+  })
+  @Prop({ type: Object, default: {} })
+  systemProfile: Record<string, any>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -28,16 +28,15 @@ describe('UsersProfileController (e2e)', () => {
 
     const accessToken: string = signInResponse.body.accessToken;
 
-    const meResponse = await request(app.getHttpServer())
-      .get('/auth/me')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .expect(200);
-
-    return { accessToken, userId: meResponse.body._id as string };
+    return { accessToken };
   };
 
   beforeAll(async () => {
     process.env.NODE_ENV = 'test';
+    process.env.S3_ENDPOINT = process.env.S3_ENDPOINT || 'http://localhost';
+    process.env.S3_BUCKET_NAME = process.env.S3_BUCKET_NAME || 'tickado-test';
+    process.env.S3_ACCESS_KEY = process.env.S3_ACCESS_KEY || 'test-access-key';
+    process.env.S3_SECRET_KEY = process.env.S3_SECRET_KEY || 'test-secret-key';
 
     const { AppModule } = await import('../../src/app.module');
 
@@ -73,17 +72,16 @@ describe('UsersProfileController (e2e)', () => {
     }
   });
 
-  describe('/users/:id/profile (POST)', () => {
+  describe('/users/me/profile (POST)', () => {
     it('should create a profile for a user', async () => {
-      const { userId, accessToken } =
-        await createAuthenticatedUser('+989120000001');
+      const { accessToken } = await createAuthenticatedUser('+989120000001');
       const profile = {
         bio: 'Software Engineer',
         interests: ['coding', 'hiking'],
       };
 
       return request(app.getHttpServer())
-        .post(`/users/${userId}/profile`)
+        .post('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({ profile })
         .expect(201)
@@ -93,11 +91,10 @@ describe('UsersProfileController (e2e)', () => {
     });
 
     it('should return 409 when profile already exists', async () => {
-      const { userId, accessToken } =
-        await createAuthenticatedUser('+989120000002');
+      const { accessToken } = await createAuthenticatedUser('+989120000002');
 
       await request(app.getHttpServer())
-        .post(`/users/${userId}/profile`)
+        .post('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           profile: { bio: 'Initial bio' },
@@ -105,7 +102,7 @@ describe('UsersProfileController (e2e)', () => {
         .expect(201);
 
       return request(app.getHttpServer())
-        .post(`/users/${userId}/profile`)
+        .post('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           profile: { bio: 'Second bio' },
@@ -114,20 +111,19 @@ describe('UsersProfileController (e2e)', () => {
     });
   });
 
-  describe('/users/:id/profile (GET)', () => {
+  describe('/users/me/profile (GET)', () => {
     it('should get an existing profile', async () => {
-      const { userId, accessToken } =
-        await createAuthenticatedUser('+989120000003');
+      const { accessToken } = await createAuthenticatedUser('+989120000003');
       const profile = { bio: 'Backend Developer' };
 
       await request(app.getHttpServer())
-        .post(`/users/${userId}/profile`)
+        .post('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({ profile })
         .expect(201);
 
       return request(app.getHttpServer())
-        .get(`/users/${userId}/profile`)
+        .get('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((response) => {
@@ -135,23 +131,25 @@ describe('UsersProfileController (e2e)', () => {
         });
     });
 
-    it('should return 404 for non-existent user', async () => {
+    it('should return empty object when profile does not exist', async () => {
       const { accessToken } = await createAuthenticatedUser('+989120000006');
 
       return request(app.getHttpServer())
-        .get('/users/507f1f77bcf86cd799439011/profile')
+        .get('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
-        .expect(404);
+        .expect(200)
+        .expect((response) => {
+          expect(response.body).toEqual({});
+        });
     });
   });
 
-  describe('/users/:id/profile (PATCH)', () => {
+  describe('/users/me/profile (PATCH)', () => {
     it('should merge profile fields when updating', async () => {
-      const { userId, accessToken } =
-        await createAuthenticatedUser('+989120000004');
+      const { accessToken } = await createAuthenticatedUser('+989120000004');
 
       await request(app.getHttpServer())
-        .post(`/users/${userId}/profile`)
+        .post('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           profile: {
@@ -162,7 +160,7 @@ describe('UsersProfileController (e2e)', () => {
         .expect(201);
 
       return request(app.getHttpServer())
-        .patch(`/users/${userId}/profile`)
+        .patch('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           profile: {
@@ -181,13 +179,12 @@ describe('UsersProfileController (e2e)', () => {
     });
   });
 
-  describe('/users/:id/profile (DELETE)', () => {
+  describe('/users/me/profile (DELETE)', () => {
     it('should remove profile and return empty object', async () => {
-      const { userId, accessToken } =
-        await createAuthenticatedUser('+989120000005');
+      const { accessToken } = await createAuthenticatedUser('+989120000005');
 
       await request(app.getHttpServer())
-        .post(`/users/${userId}/profile`)
+        .post('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           profile: { bio: 'To be removed' },
@@ -195,7 +192,7 @@ describe('UsersProfileController (e2e)', () => {
         .expect(201);
 
       await request(app.getHttpServer())
-        .delete(`/users/${userId}/profile`)
+        .delete('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((response) => {
@@ -203,7 +200,7 @@ describe('UsersProfileController (e2e)', () => {
         });
 
       return request(app.getHttpServer())
-        .get(`/users/${userId}/profile`)
+        .get('/users/me/profile')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((response) => {

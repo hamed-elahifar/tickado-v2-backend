@@ -1,6 +1,11 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { UserService } from './users.service';
-import { CreateProfileDto, UpdateProfileDto } from './dto';
+import {
+  CreateProfileDto,
+  UpdateProfileDto,
+  CreateSystemProfileDto,
+  UpdateSystemProfileDto,
+} from './dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -64,5 +69,66 @@ export class UsersProfileService {
     } as UpdateUserDto);
 
     return updatedUser.profile || {};
+  }
+
+  async createSystem(
+    userId: string,
+    dto: CreateSystemProfileDto,
+  ): Promise<Record<string, any>> {
+    const user = await this.userService.findOneSafe({ _id: userId }, [
+      'systemProfile',
+    ]);
+    const existingProfile = user.systemProfile || {};
+
+    if (Object.keys(existingProfile).length > 0) {
+      throw new ConflictException(
+        'System profile already exists for this user',
+      );
+    }
+
+    const updatedUser = await this.userService.update(userId, {
+      systemProfile: dto.systemProfile || {},
+    } as UpdateUserDto);
+
+    return updatedUser.systemProfile || {};
+  }
+
+  async findOneSystem(userId: string): Promise<Record<string, any>> {
+    const user = await this.userService.findOneSafe({ _id: userId }, [
+      'systemProfile',
+    ]);
+    return user.systemProfile || {};
+  }
+
+  async updateSystem(
+    userId: string,
+    dto: UpdateSystemProfileDto,
+  ): Promise<Record<string, any>> {
+    const user = await this.userService.findOneSafe({ _id: userId }, [
+      'systemProfile',
+    ]);
+    const currentProfile = user.systemProfile || {};
+    const patchProfile = dto.systemProfile || {};
+
+    const mergedProfile = {
+      ...currentProfile,
+      ...patchProfile,
+    };
+
+    const updatedUser = await this.userService.update(userId, {
+      systemProfile: mergedProfile,
+    } as UpdateUserDto);
+
+    return updatedUser.systemProfile || {};
+  }
+
+  async removeSystem(userId: string): Promise<Record<string, any>> {
+    await this.userService.findOneSafe({ _id: userId }, ['systemProfile']);
+
+    const updatedUser = await this.userService.update(userId, {
+      systemProfile: {},
+    } as UpdateUserDto);
+
+    return updatedUser.systemProfile || {};
   }
 }
