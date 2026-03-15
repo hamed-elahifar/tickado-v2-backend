@@ -93,9 +93,12 @@ describe('UsersController (e2e)', () => {
     }
   });
 
-  describe('/users (POST)', () => {
+  describe('/admin/users (POST)', () => {
     it('should create a new user', async () => {
-      const { accessToken } = await createAuthenticatedUser('+989120001000');
+      const { accessToken } = await createAuthenticatedUser(
+        '+989120001000',
+        RolesEnum.ADMIN,
+      );
 
       const createUserDto: CreateUserDto = {
         name: 'Test User',
@@ -103,7 +106,7 @@ describe('UsersController (e2e)', () => {
       };
 
       return request(app.getHttpServer())
-        .post('/users')
+        .post('/admin/users')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(createUserDto)
         .expect(201)
@@ -118,7 +121,10 @@ describe('UsersController (e2e)', () => {
     });
 
     xit('should not create a user with duplicate phone number', async () => {
-      const { accessToken } = await createAuthenticatedUser('+989120001002');
+      const { accessToken } = await createAuthenticatedUser(
+        '+989120001002',
+        RolesEnum.ADMIN,
+      );
 
       const createUserDto: CreateUserDto = {
         name: 'Test User',
@@ -126,22 +132,25 @@ describe('UsersController (e2e)', () => {
       };
 
       await request(app.getHttpServer())
-        .post('/users')
+        .post('/admin/users')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(createUserDto)
         .expect(201);
 
       return request(app.getHttpServer())
-        .post('/users')
+        .post('/admin/users')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(createUserDto)
         .expect(400);
     });
   });
 
-  describe('/users (GET)', () => {
+  describe('/admin/users (GET)', () => {
     it('should get all users with pagination', async () => {
-      const { accessToken } = await createAuthenticatedUser('+989120001010');
+      const { accessToken } = await createAuthenticatedUser(
+        '+989120001010',
+        RolesEnum.ADMIN,
+      );
 
       const users = [
         { name: 'User 1', phone: '+989120001011' },
@@ -151,14 +160,14 @@ describe('UsersController (e2e)', () => {
 
       for (const user of users) {
         await request(app.getHttpServer())
-          .post('/users')
+          .post('/admin/users')
           .set('Authorization', `Bearer ${accessToken}`)
           .send(user)
           .expect(201);
       }
 
       return request(app.getHttpServer())
-        .get('/users')
+        .get('/admin/users')
         .set('Authorization', `Bearer ${accessToken}`)
         .query({ limit: 2, offset: 0 })
         .expect(200)
@@ -171,7 +180,7 @@ describe('UsersController (e2e)', () => {
     });
   });
 
-  describe('/users/:id (GET)', () => {
+  describe('/admin/users/:id (GET)', () => {
     it('should get a user by id', async () => {
       const { accessToken } = await createAuthenticatedUser(
         '+989120001020',
@@ -179,7 +188,7 @@ describe('UsersController (e2e)', () => {
       );
 
       const createResponse = await request(app.getHttpServer())
-        .post('/users')
+        .post('/admin/users')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Test User',
@@ -190,7 +199,7 @@ describe('UsersController (e2e)', () => {
       const userId = createResponse.body._id;
 
       return request(app.getHttpServer())
-        .get(`/users/${userId}`)
+        .get(`/admin/users/${userId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((response) => {
@@ -207,7 +216,7 @@ describe('UsersController (e2e)', () => {
       );
 
       return request(app.getHttpServer())
-        .get('/users/507f1f77bcf86cd799439011')
+        .get('/admin/users/507f1f77bcf86cd799439011')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
     });
@@ -219,18 +228,21 @@ describe('UsersController (e2e)', () => {
       );
 
       return request(app.getHttpServer())
-        .get('/users/invalid-id')
+        .get('/admin/users/invalid-id')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
     });
   });
 
-  describe('/users/:id (PATCH)', () => {
+  describe('/admin/users/:id (PATCH)', () => {
     it('should update a user', async () => {
-      const { accessToken } = await createAuthenticatedUser('+989120001030');
+      const { accessToken } = await createAuthenticatedUser(
+        '+989120001030',
+        RolesEnum.ADMIN,
+      );
 
       const createResponse = await request(app.getHttpServer())
-        .post('/users')
+        .post('/admin/users')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Test User',
@@ -241,7 +253,7 @@ describe('UsersController (e2e)', () => {
       const userId = createResponse.body._id;
 
       return request(app.getHttpServer())
-        .patch(`/users/${userId}`)
+        .patch(`/admin/users/${userId}`)
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Updated User',
@@ -255,10 +267,13 @@ describe('UsersController (e2e)', () => {
     });
 
     it('should return 404 for non-existent user update', async () => {
-      const { accessToken } = await createAuthenticatedUser('+989120001032');
+      const { accessToken } = await createAuthenticatedUser(
+        '+989120001032',
+        RolesEnum.ADMIN,
+      );
 
       return request(app.getHttpServer())
-        .patch('/users/507f1f77bcf86cd799439011')
+        .patch('/admin/users/507f1f77bcf86cd799439011')
         .set('Authorization', `Bearer ${accessToken}`)
         .send({
           name: 'Updated User',

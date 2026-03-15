@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AdminUsersController } from './admin-users.controller';
+import { AdminUsersProfileController } from './admin-users-profile.controller';
 import { UsersProfileController } from './users-profile.controller';
 import { UsersProfileService } from './users-profile.service';
 import { UsersController } from './users.controller';
@@ -17,7 +19,12 @@ import { UserService } from './users.service';
       },
     ]),
   ],
-  controllers: [UsersController, UsersProfileController],
+  controllers: [
+    UsersController,
+    UsersProfileController,
+    AdminUsersController,
+    AdminUsersProfileController,
+  ],
   providers: [
     UserService,
     UserRepository,
