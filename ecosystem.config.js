@@ -3,7 +3,7 @@ require('dotenv').config();
 module.exports = {
   apps: [
     {
-      name: 'tickado-v2',
+      name: 'tickado-v2-api',
       script: 'dist/main.js',
       interpreter: 'node',
       env: {

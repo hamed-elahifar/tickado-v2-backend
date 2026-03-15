@@ -6,11 +6,12 @@
 set -e  # Exit on error
 
 # Configuration - EDIT THESE
-LOCAL_PATH="$(pwd)/"          # Current project dir (trailing / for contents)
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LOCAL_PATH="$PROJECT_DIR/"          # Current project dir (trailing / for contents)
 REMOTE_USER="root"    # SSH username
 REMOTE_HOST="app.tickado.info"  # Server IP or hostname
 REMOTE_BASE="/root/"  # Server base folder
-REMOTE_PATH="${REMOTE_BASE}$(basename "$PWD")/"  # Auto: base + project name
+REMOTE_PATH="${REMOTE_BASE}$(basename "$PROJECT_DIR")/"  # Auto: base + project name
 
 DRY_RUN=false
 if [ "$1" = "--dry-run" ]; then

@@ -28,7 +28,7 @@ export class User extends Document {
   email?: string;
 
   @Exclude()
-  @Prop()
+  @Prop({ select: false })
   password?: string;
 
   @ApiProperty({ example: '/avatar.jpg', description: 'The avatar URL' })
